@@ -1,0 +1,110 @@
+Entities:
+User
+Tour
+Location
+Review
+Booking
+
+Guide
+Drive
+Bus
+
+collection:
+User
+{
+    name: 'khan',
+    email: 'gkretue',
+    review: [
+        {
+            review: 'good',
+            rating: 3.4,
+        },
+        {
+            review: 'good',
+            rating: 3.7,
+        }
+    ],
+    booking: [  ---> child referencing
+        objectId('4ertew9'),
+        objectId('4ertew9'),
+    ]
+}
+
+booking: [  //parent referencing
+        {
+            id: 1,
+            tourName: 'dhaka to cox',
+            userId: '4orue9wr'
+        }
+    ]
+Tour{
+    locations: [
+        {
+            city: 'chandpur',
+            area: 'kasem bazer'
+        }
+    ]
+}
+Embedding
+Referencing:
+
+2 way referencing: modified child referencing
+Movies: [
+    {
+        id: 1,
+        name: 'joy bangla',
+        actors: [
+            objectId('eiriuwe34'),
+            objectId('eiriuwe34'),
+            objectId('eiriuwe34'),
+            objectId('eiriuwe34'),
+            objectId('eiriuwe34'),
+        ]
+    }
+]
+Actor:{     ->BSON document => max limit 16MB
+    id: 1,
+    name: 'tom crues',
+    movies: [
+        objectId('398483jhdskfj'),
+        objectId('398483jhdskfj'),
+        objectId('398483jhdskfj'),
+        objectId('398483jhdskfj'),
+    ]
+}
+
+
+Relation of Database:
+1. One to One = 1 tour 1 user --> 1 time review/ user general profile
+2. Many to One/One to Many = Actor can act multiple movies
+//only mongodb
+    a. One to few: user: [order1, order2, order3, 50>] Embedding: child/parent
+    b. One to Many: user: [comment1, ...200000000] referencing
+    c. One to Tons: chat: parent referencing
+3. Many to Many : 2 way referencing
+
+// choice Referencing / Embedding
+Tour: {
+    locations: [
+        objectId('48985dfsfks'),
+        objectId('48985dfsfks'),
+        objectId('48985dfsfks'),
+    ]
+}
+Booking: [ -> parent referencing
+    id: 1,
+    userId: 1,
+]
+
+User:{
+    referencing nai
+}
+Review: { -> parent referencing
+    id: 1,
+    tourId: 1,
+    userId: 1,
+}
+
+collection close ness
+
+
