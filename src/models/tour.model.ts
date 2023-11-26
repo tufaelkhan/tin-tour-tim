@@ -1,7 +1,8 @@
 import { Query, Schema, model } from "mongoose";
-import { ITour } from "../interfaces/tour.interface";
+import { ITour, ITourMethods, TTourModel } from "../interfaces/tour.interface";
+import slugify from 'slugify'
 
-const tourSchema = new Schema<ITour>({
+const tourSchema = new Schema<ITour, TTourModel, ITourMethods >({
     name: {
         type: String,
         required: [true, "please give tour name"]
@@ -35,18 +36,49 @@ const tourSchema = new Schema<ITour>({
     },
     locations: [String],
     slug: String,
+}, {
+    toJSON: {virtuals: true}, 
+    toObject: {virtuals: true}
 })
+
+tourSchema.virtual("durationDays").get(function (){
+    return this.duration / 24
+})
+
+
 
 // pre hook for query middleware
 tourSchema.pre(/^find/, function(this: Query<ITour, Document>, next){
-    this.find({userStatus: {$eq: "active"}})
+    this.find()
     next()
 })
 // userSchema.pre('findOne', function(next){
 //     this.find({userStatus: {$eq: "active"}})
 //     next()
 // })
+tourSchema.pre('save', function(next){
+    this.slug = slugify(this.name, {lower: true})
+    next()
+})
 
+tourSchema.methods.getNextNearestStartAndEndDate = function(): {
+        nextStartDate: Date | null
+        estimatedEndDate: Date | null
+    }{
+    const today = new Date()
+    const futureDate = this.startDates.filter((startDate: Date) =>{
+        return startDate > today
+    })
+    futureDate.sort((a:Date, b:Date) => a.getTime() - b.getTime())
+    const nextStartDate = futureDate[0]
+    const estimatedEndDate = new Date(
+        nextStartDate.getTime() + this.duration * 60 * 60 * 1000,
+    )
+    return {
+         nextStartDate,
+        estimatedEndDate
+    }
+}
 
-const Tour = model<ITour>('Tour', tourSchema);
+const Tour = model<ITour, TTourModel>('Tour', tourSchema);
 export default Tour

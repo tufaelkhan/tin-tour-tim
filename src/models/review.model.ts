@@ -1,4 +1,4 @@
-import { Schema, model} from "mongoose";
+import { Query, Schema, model} from "mongoose";
 import { IReview } from "../interfaces/review.interface";
 
 const reviewSchema = new Schema<IReview>({
@@ -24,8 +24,14 @@ const reviewSchema = new Schema<IReview>({
         ref: "User",
         required: [true, 'tell the user']
     },
-    
+
 })
+
+reviewSchema.pre(/^find/, function(this: Query<IReview, Document>, next){
+    this.find()
+    next()
+})
+
 
 const Review = model<IReview>('Review', reviewSchema)
 export default Review

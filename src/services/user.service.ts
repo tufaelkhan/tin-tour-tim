@@ -34,6 +34,7 @@ const deleteUser = async (id:string): Promise<IUser | null> => {
 }
 
 
+
 export const userServices = {
     createUser,
     getAllUser,
