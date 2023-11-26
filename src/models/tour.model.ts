@@ -44,6 +44,11 @@ const tourSchema = new Schema<ITour, TTourModel, ITourMethods >({
 tourSchema.virtual("durationDays").get(function (){
     return this.duration / 24
 })
+tourSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: "tour",
+    localField: "_id",
+})
 
 
 
